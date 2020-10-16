@@ -3,6 +3,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 #AOA 
+delim = "--------------" #adds readability 
 alpha = np.array([-16,-12,-8,-4,-2,0,2,4,8,12])
 
 CD_wing = np.array([
@@ -46,19 +47,19 @@ print(curve_CM(alpha))
 #for given variables x and y; the 1 is the order 
 #of the line.
 
-print("-----------") #these lines simply enhance readability
+print(delim) #these lines simply enhance readability
 def curve_CL(alpha):
     return np.polyfit(alpha,CL_wing,1,None,False,None,False)
 print("for CL curve,first value=m, second=c")
 print(curve_CL(alpha))
 
-print("-----------")
+print(delim)
 def curve_CL_e(delta_el):
     return np.polyfit(delta_el,CL_el,1,None,False,None,False)
 print("For CL_e, first value=m,second= c" )
 print(curve_CL_e(delta_el))
 
-print("-----------")
+print(delim)
 def curve_CM_e(delta_el):
     return np.polyfit(delta_el,CM_el,1,None,False,None,False)
 print("For CM_e, first value=m,second= c" )

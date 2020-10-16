@@ -3,5 +3,5 @@ import CoeffecientData as data
 import AircraftDynamics as ps
 
 if __name__ == "__main__":
-	data.plot()
+	data.plot() #testing 
 	
