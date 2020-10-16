@@ -37,3 +37,33 @@ def plot():
 	ax5.set(ylabel='CM_el')
 	ax5.plot(delta_el,CM_el,'cx')
 	plt.show()
+	
+def curve_CM(alpha):
+    return np.polyfit(alpha,CM_wing,1,None,False,None,False)
+print("for CM, first value=m,second= c" )
+print(curve_CM(alpha))
+#The polyfit function gives the line of best fit
+#for given variables x and y; the 1 is the order 
+#of the line.
+
+print("-----------") #these lines simply enhance readability
+def curve_CL(alpha):
+    return np.polyfit(alpha,CL_wing,1,None,False,None,False)
+print("for CL curve,first value=m, second=c")
+print(curve_CL(alpha))
+
+print("-----------")
+def curve_CL_e(delta_el):
+    return np.polyfit(delta_el,CL_el,1,None,False,None,False)
+print("For CL_e, first value=m,second= c" )
+print(curve_CL_e(delta_el))
+
+print("-----------")
+def curve_CM_e(delta_el):
+    return np.polyfit(delta_el,CM_el,1,None,False,None,False)
+print("For CM_e, first value=m,second= c" )
+print(curve_CM_e(delta_el))
+#NOTE: Both of the C values for elevator terms are expected to be zero
+#as their equations take the form y=mx;we'll probably have to use
+#error bounds to discuss why the smaller values found can be
+#dscounted
