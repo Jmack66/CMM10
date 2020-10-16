@@ -1,6 +1,7 @@
-import numpy
+import numpy as np
+import CoeffecientData as data
+import AircraftDynamics as ps
 
-#jonah is dumb
-
-
-#gotta do some coooooool stuf in here lets get it gang
+if __name__ == "__main__":
+	data.plot() #testing 
+	
