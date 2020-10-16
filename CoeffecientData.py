@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 #AOA 
 delim = "--------------" #adds readability 
 alpha = np.array([-16,-12,-8,-4,-2,0,2,4,8,12])
+display = True #temporary
+
 
 CD_wing = np.array([
 	0.115000000000000 , 0.079000000000000, 0.047000000000000, 0.031000000000000,
@@ -23,6 +25,8 @@ delta_el = np.array([-20,-10,0,10,20])
 CL_el = np.array([-0.051000000000000,-0.038000000000000, 0, 0.038000000000000, 0.052000000000000])
 
 CM_el = np.array([0.084200000000000, 0.060100000000000,-0.000100000000000,-0.060100000000000,-0.0])
+names = np.array(["CD_wing", "CL_wing","CM_wing","CL_el", "CM_el"])
+all_arrs = np.array([CD_wing,CL_wing,CM_wing,CL_el,CM_el])
 
 def plot():
 	fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
@@ -39,32 +43,21 @@ def plot():
 	ax5.plot(delta_el,CM_el,'cx')
 	plt.show()
 	
-def curve_CM(alpha):
-    return np.polyfit(alpha,CM_wing,1,None,False,None,False)
-print("for CM, first value=m,second= c" )
-print(curve_CM(alpha))
-#The polyfit function gives the line of best fit
-#for given variables x and y; the 1 is the order 
-#of the line.
 
-print(delim) #these lines simply enhance readability
-def curve_CL(alpha):
-    return np.polyfit(alpha,CL_wing,1,None,False,None,False)
-print("for CL curve,first value=m, second=c")
-print(curve_CL(alpha))
+def curve_fit(x,y,name):
+	print("for {}, first value=m,second= c".format(name))
+	out = np.polyfit(x,y,1,None,False,None,False)
+	print(out)
+	print(delim)
+	return out
+if(display):
+	for i in range(len(all_arrs)):
+		if(i < 3):
+			curve_fit(alpha,all_arrs[i],names[i])
+		else:
+			curve_fit(delta_el,all_arrs[i],names[i])
 
-print(delim)
-def curve_CL_e(delta_el):
-    return np.polyfit(delta_el,CL_el,1,None,False,None,False)
-print("For CL_e, first value=m,second= c" )
-print(curve_CL_e(delta_el))
-
-print(delim)
-def curve_CM_e(delta_el):
-    return np.polyfit(delta_el,CM_el,1,None,False,None,False)
-print("For CM_e, first value=m,second= c" )
-print(curve_CM_e(delta_el))
-#NOTE: Both of the C values for elevator terms are expected to be zero
-#as their equations take the form y=mx;we'll probably have to use
-#error bounds to discuss why the smaller values found can be
-#dscounted
+# #NOTE: Both of the C values for elevator terms are expected to be zero
+# #as their equations take the form y=mx;we'll probably have to use
+# #error bounds to discuss why the smaller values found can be
+# #dscounted
