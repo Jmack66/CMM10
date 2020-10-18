@@ -1,11 +1,11 @@
-#Plane coeffecient Data 
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-#AOA 
+
+#Plane coeffecient Data and curve fitting 
 delim = "--------------" #adds readability 
 alpha = np.array([-16,-12,-8,-4,-2,0,2,4,8,12])
-display = True #temporary
+display = True #temporary variable to print the outputs of the curve fit
 
 
 CD_wing = np.array([
@@ -28,6 +28,7 @@ CM_el = np.array([0.084200000000000, 0.060100000000000,-0.000100000000000,-0.060
 names = np.array(["CD_wing", "CL_wing","CM_wing","CL_el", "CM_el"])
 all_arrs = np.array([CD_wing,CL_wing,CM_wing,CL_el,CM_el])
 
+#eh this code could be made better a lot of repeated code here
 def plot():
 	fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
 	ax1.set(ylabel='CD_wing')
@@ -45,18 +46,33 @@ def plot():
 	
 
 def curve_fit(x,y,name):
-	print("for {}, first value=m,second= c".format(name))
 	out = np.polyfit(x,y,1,None,False,None,False)
-	print(out)
-	print(delim)
+	if(display):
+		print("for {}, first value=m,second= c".format(name))
+		print(out)
+		print(delim)
 	return out
-if(display):
+
+def curve_fit_all():
+	c_vals = np.array([])
+	m_vals = np.array([])
 	for i in range(len(all_arrs)):
 		if(i < 3):
-			curve_fit(alpha,all_arrs[i],names[i])
+			temp = curve_fit(alpha,all_arrs[i],names[i])
+			c_vals = np.append(c_vals,temp[1]) #is there a better way to do this shit like cmon numpy (i might be dumb)
+			m_vals = np.append(m_vals,temp[0])
 		else:
 			curve_fit(delta_el,all_arrs[i],names[i])
+			c_vals = np.append(c_vals,temp[1])
+			m_vals = np.append(m_vals,temp[0])
+	print(c_vals,m_vals)
+	return c_vals,m_vals
 
+def Cl_full(a_in,d_in):
+	cs,ms = curve_fit_all()
+	return(cs[1] +ms[1]*a_in +ms[4]*d_in)
+
+print(Cl_full(0.4,0.6)) #just a lil test here to see fi we can get some good numbers out of the CL total
 # #NOTE: Both of the C values for elevator terms are expected to be zero
 # #as their equations take the form y=mx;we'll probably have to use
 # #error bounds to discuss why the smaller values found can be
