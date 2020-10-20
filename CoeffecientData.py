@@ -62,7 +62,7 @@ def curve_fit_all():
 			c_vals = np.append(c_vals,temp[1]) #is there a better way to do this shit like cmon numpy (i might be dumb)
 			m_vals = np.append(m_vals,temp[0])
 		else:
-			curve_fit(delta_el,all_arrs[i],names[i])
+			temp = curve_fit(delta_el,all_arrs[i],names[i])
 			c_vals = np.append(c_vals,temp[1])
 			m_vals = np.append(m_vals,temp[0])
 	print(c_vals,m_vals)
