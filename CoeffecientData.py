@@ -1,12 +1,21 @@
+from scipy import optimize
 import numpy as np
-from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
+#Plane coeffecient Data
+#container for data and related coeffecient things
+#initial guesses
+CL_0 = 0.0410
+CL_alpha = 0.1
+CL_delta = 0.003
+CD_0 = 0.026
+CD_k = 0.045
+CM_0 = 0.007
+CM_alpha = -0.01
+CM_delta = -0.004
+all_guess = np.array([(CL_0,CL_alpha),CL_delta,(CD_0,CD_k),(CM_0,CM_alpha),CM_delta])
 
-#Plane coeffecient Data and curve fitting 
-delim = "--------------" #adds readability 
+#------Data Values--------
 alpha = np.array([-16,-12,-8,-4,-2,0,2,4,8,12])
-display = True #temporary variable to print the outputs of the curve fit
-
 
 CD_wing = np.array([
 	0.115000000000000 , 0.079000000000000, 0.047000000000000, 0.031000000000000,
@@ -27,53 +36,31 @@ CL_el = np.array([-0.051000000000000,-0.038000000000000, 0, 0.038000000000000, 0
 CM_el = np.array([0.084200000000000, 0.060100000000000,-0.000100000000000,-0.060100000000000,-0.0])
 names = np.array(["CD_wing", "CL_wing","CM_wing","CL_el", "CM_el"])
 all_arrs = np.array([CD_wing,CL_wing,CM_wing,CL_el,CM_el])
-
-#eh this code could be made better a lot of repeated code here
-def plot():
-	fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
-	ax1.set(ylabel='CD_wing')
-	ax1.plot(alpha,CD_wing,'rx')
-	ax2.set(ylabel='CL_wing')
-	ax2.plot(alpha,CL_wing,'bx')
-	ax3.set(ylabel='CM_wing')
-	ax3.plot(alpha,CM_wing,'gx')
-	fig2, (ax4,ax5) = plt.subplots(2, sharex=True)
-	ax4.set(ylabel='CL_el')
-	ax4.plot(delta_el,CL_el,'yx')
-	ax5.set(ylabel='CM_el')
-	ax5.plot(delta_el,CM_el,'cx')
-	plt.show()
-	
-
-def curve_fit(x,y,name):
-	out = np.polyfit(x,y,1,None,False,None,False)
-	if(display):
-		print("for {}, first value=m,second= c".format(name))
-		print(out)
-		print(delim)
-	return out
-
+feed = np.array([(alpha, CL_wing),(delta_el,CL_el),(CL_wing,CD_wing),(alpha,CM_wing),(delta_el,CM_el)])
+#-----------Functions------ 
+def CL_a_func(x, a, b): #alpha, cl
+    return a + b * x
+def CL_d_func(x, a): #delta_el, CL_el
+    return a * x
+def CD_CL_func(x, a, b): #CL, CD
+    return a + b * x**2.0
+def CM_alpha_func(x, a, b): #alpha,CM
+    return a + b * x
+def CM_d_func(x, a): #delta_el, CM_el
+    return a * x
+#-----------------------
+all_funcs = np.array([CL_a_func,CL_d_func,CD_CL_func,CM_alpha_func,CM_d_func])
 def curve_fit_all():
-	c_vals = np.array([])
-	m_vals = np.array([])
-	for i in range(len(all_arrs)):
-		if(i < 3):
-			temp = curve_fit(alpha,all_arrs[i],names[i])
-			c_vals = np.append(c_vals,temp[1]) #is there a better way to do this shit like cmon numpy (i might be dumb)
-			m_vals = np.append(m_vals,temp[0])
-		else:
-			temp = curve_fit(delta_el,all_arrs[i],names[i])
-			c_vals = np.append(c_vals,temp[1])
-			m_vals = np.append(m_vals,temp[0])
-	print(c_vals,m_vals)
-	return c_vals,m_vals
-
-def Cl_full(a_in,d_in):
-	cs,ms = curve_fit_all()
-	return(cs[1] +ms[1]*a_in +ms[4]*d_in)
-
-print(Cl_full(0.4,0.6)) #just a lil test here to see fi we can get some good numbers out of the CL total
-# #NOTE: Both of the C values for elevator terms are expected to be zero
-# #as their equations take the form y=mx;we'll probably have to use
-# #error bounds to discuss why the smaller values found can be
-# #dscounted
+    all_covars = np.array([])
+    all_params = np.array([])
+    for i in range(len(all_funcs)):
+        params,covars = optimize.curve_fit(all_funcs[i],feed[i][0],feed[i][1],all_guess[i])
+        all_covars = np.append(all_covars,covars)
+        all_params = np.append(all_params,params)
+    return all_params,all_covars
+def set_coeffecients():
+    coeffs,covar = curve_fit_all()
+    coeffecients = {"CL_0" : coeffs[0],"CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delt" : coeffs[7]}
+    print(coeffecients)
+    return True
+set_coeffecients()
