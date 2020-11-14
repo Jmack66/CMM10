@@ -50,6 +50,8 @@ def CM_d_func(x, a): #delta_el, CM_el
     return a * x
 #-----------------------
 all_funcs = np.array([CL_a_func,CL_d_func,CD_CL_func,CM_alpha_func,CM_d_func])
+
+#uses scipy to curve fit
 def curve_fit_all():
     all_covars = np.array([])
     all_params = np.array([])
@@ -58,9 +60,11 @@ def curve_fit_all():
         all_covars = np.append(all_covars,covars)
         all_params = np.append(all_params,params)
     return all_params,all_covars
+# create a dictionary of all the coeffecients so that they can be accessed easily
+# calling set_coeffecients will call curve_fit_all and returns the coeffecients and covariance
 def set_coeffecients():
     coeffs,covar = curve_fit_all()
-    coeffecients = {"CL_0" : coeffs[0],"CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delt" : coeffs[7]}
+    coeffecients = {'CL_0' : coeffs[0], "CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delta" : coeffs[7]}
+    covariance = {"CL_0" : covar[0],"CL_alpha" : covar[1],"CL_delta" : covar[2],"CD_0" : covar[3],"CD_K" : covar[4],"CM_0" : covar[5],"CM_alpha" : covar[6], "CM_delt" : covar[7]}
     print(coeffecients)
-    return True
-set_coeffecients()
+    return coeffecients,covariance
