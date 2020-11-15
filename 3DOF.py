@@ -1,10 +1,12 @@
 """3dof solver"""
 import scipy as scipy
-import scipy.integrate 
+from scipy import integrate
 import math as math
 import find_alpha 
 import vehicle
+import numpy as np
 import env
+import matplotlib.pyplot as plt
 print(find_alpha.q)
 
 
@@ -12,10 +14,21 @@ tmin=0
 tmax=100
 """"tmin is the start of the interval to be examined, tmax the end"""
 
+q0= find_alpha.q
 
-diff_q = (vehicle.acMass)/(vehicle.inertia_yy)
+def q(t,q):
+    q = (vehicle.acMass)/(vehicle.inertia_yy)
+    return q
+
 """diff_q = M/Iyy; these values both come from vehicle.py"""
-q_t=scipy.integrate.solve_ivp(diff_q,(tmin,tmax),find_alpha.q,method='RK45',t_eval=None, dense_output=False, events=None, vectorized=False, args=None)
+q_t=integrate.solve_ivp(q,(tmin,tmax),([q0]))
+print(q_t.t)
+ye = np.array([])
+ye = q_t.y
+ye = ye.reshape(8)
+print(ye)
+plt.plot(q_t.t, ye)
+plt.show()
 #find_alpha.q is the initial state of q(t)
 
 

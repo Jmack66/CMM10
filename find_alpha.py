@@ -52,7 +52,7 @@ alpha = optimize.fsolve(find_alpha,0)
 delta_rad = delta(alpha)*(math.pi/180)
 
 print('Angle of Attack = ' , float(np.round(alpha, 5)), 'rad')
-
+print('theta =' , float(np.round(alpha + gamma_rad, 5)), 'rad')
 print('delta e = ', float(np.round(delta_rad, 5)), 'rad')
 
 
@@ -61,5 +61,9 @@ Drag = 0.5 * env.air_density * V**2 * veh.Sref * CD(alpha)
 Lift = 0.5 * env.air_density * V**2 * veh.Sref * CL(alpha)   
 
 Thrust = Drag * np.cos(alpha) + W * np.sin(theta(alpha)) - Lift * np.sin(alpha) 
+Ub = V*np.cos(alpha)
+Wb = V*np.sin(alpha)
 
-print ('Thrust: ', float(np.round(Thrust, 2)), 'N')
+print ('Thrust = ', float(np.round(Thrust, 2)), 'N')
+print('Ub =', float(np.round(Ub, 3)), 'm/s')
+print('Wb = ', float(np.round(Wb, 4)), 'm/s')
