@@ -45,20 +45,41 @@ def theta(alpha_x):
     
         
 W = veh.acMass * env.gravity
-    
-find_alpha = lambda alpha_rad: (0.5 * env.air_density * V**2 * veh.Sref) * (CL(alpha_rad) * np.cos(alpha_rad) + CD(alpha_rad) * np.sin(alpha_rad)) - W * np.cos(theta(alpha_rad))
+def set_V(vel):
+        global V
+        V = vel
+        return True
 
-time = np.linspace(0,100,100)
-big_pee = np.zeros(100)
-for i in time - 1:
-        big_pee[int(i)] = find_alpha(i)
+def find_alpha(alpha_rad):
+        return (0.5 * env.air_density * V**2 * veh.Sref) * (CL(alpha_rad) * np.cos(alpha_rad) + CD(alpha_rad) * np.sin(alpha_rad)) - W * np.cos(theta(alpha_rad))
 
+#find_alpha = lambda alpha_rad: (0.5 * env.air_density * V**2 * veh.Sref) * (CL(alpha_rad) * np.cos(alpha_rad) + CD(alpha_rad) * np.sin(alpha_rad)) - W * np.cos(theta(alpha_rad))
+Drag = 0.5 * env.air_density * V**2 * veh.Sref * CD(alpha)
+Lift = 0.5 * env.air_density * V**2 * veh.Sref * CL(alpha)
+
+Thrust = Drag * np.cos(alpha) + W * np.sin(theta(alpha)) - Lift * np.sin(alpha) 
+Ub = V*np.cos(alpha)
+Wb = V*np.sin(alpha)
 
 def solve_alpha(last_alpha):
-        alpha = optimize.fsolve(find_alpha,[last_alpha,last_alpha+ 5])
+        #alpha = optimize.fsolve(find_alpha,[last_alpha,last_alpha+ 5])
+        alpha,N = bisection_method(find_alpha,last_alpha,last_alpha + 10,100,0.00001)
         return alpha
 
-
+def bisection_method(F,a,b,N,err_tol):
+    a_n = a
+    b_n = b
+    for i in range(1,N + 1):
+        mid = (a_n + b_n)/ 2
+        if(abs(F(mid)) < err_tol):
+            return mid,i
+        if(F(a_n) * F(mid) < 0):
+            a_n = a_n
+            b_n = mid 
+        elif(F(b_n) * F(mid) < 0):
+            a_n = mid
+            b_n = b_n
+    return mid,N
 def get_delta_rad(alpha):
         delta_rad = delta(alpha)*(math.pi/180)
         return delta_rad
@@ -73,14 +94,6 @@ def get_thrust(alpha):
 # print('delta e = ', float(np.round(delta_rad, 5)), 'rad')
 
 
-
-Drag = 0.5 * env.air_density * V**2 * veh.Sref * CD(alpha)
-Lift = 0.5 * env.air_density * V**2 * veh.Sref * CL(alpha)   
-
-Thrust = Drag * np.cos(alpha) + W * np.sin(theta(alpha)) - Lift * np.sin(alpha) 
-Ub = V*np.cos(alpha)
-Wb = V*np.sin(alpha)
-
-print ('Thrust = ', float(np.round(Thrust, 2)), 'N')
-print('Ub =', float(np.round(Ub, 3)), 'm/s')
-print('Wb = ', float(np.round(Wb, 4)), 'm/s')
+# print ('Thrust = ', float(np.round(Thrust, 2)), 'N')
+# print('Ub =', float(np.round(Ub, 3)), 'm/s')
+# print('Wb = ', float(np.round(Wb, 4)), 'm/s')
