@@ -1,6 +1,7 @@
 from scipy import optimize
 import numpy as np
 import matplotlib.pyplot as plt
+import find_alpha
 #Plane coeffecient Data
 #container for data and related coeffecient things
 #initial guesses
@@ -67,8 +68,16 @@ def set_coeffecients():
     coeffs,covar = curve_fit_all()
     coeffecients = {'CL_0' : coeffs[0], "CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delta" : coeffs[7]}
     covariance = {"CL_0" : covar[0],"CL_alpha" : covar[1],"CL_delta" : covar[2],"CD_0" : covar[3],"CD_K" : covar[4],"CM_0" : covar[5],"CM_alpha" : covar[6], "CM_delt" : covar[7]}
-    print(coeffecients)
     return coeffecients,covariance
+
+def get_current_coeffecients(alpha):
+    coeff,covar = set_coeffecients()
+    CL=coeff.get("CL_0")+(coeff.get("CL_alpha")*alpha)+(coeff.get("CL_delta")*find_alpha.get_delta_rad(alpha))
+    CM=coeff.get("CM_0")+(coeff.get("CM_alpha")*alpha)+(coeff.get("CM_delta")*find_alpha.get_delta_rad(alpha))
+    CD=coeff.get("CD_0") +(coeff.get("CD_K")*CL**2)
+    return CL,CM,CD
+
+
 def getPlots():
     #NEED TO ADD CALCILATED FITS TO PLOT
     fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
