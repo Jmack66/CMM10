@@ -136,7 +136,6 @@ class PageThree(tk.Frame):
         f = self.fig1
         f2 = self.fig2
         
-
         canvas = FigureCanvasTkAgg(f, self)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
@@ -154,6 +153,8 @@ class PageThree(tk.Frame):
 
     def data_handler(self):
         cd.set_coeffecients()
-        self.fig1,self.fig2 = cd.getPlots() 
+        self.fig1,self.fig2 = cd.getPlots()
+        return True
+
 app = Simulator()
 app.mainloop()
