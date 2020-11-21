@@ -72,7 +72,7 @@ def set_coeffecients():
 
 def get_current_coeffecients(alpha):
     coeff,covar = set_coeffecients()
-    CL=coeff.get("CL_0")+(coeff.get("CL_alpha")*alpha)+(coeff.get("CL_delta")*find_alpha.get_delta_rad(alpha))
+    CL = coeff.get("CL_0")+(coeff.get("CL_alpha")*alpha)+(coeff.get("CL_delta")*find_alpha.get_delta_rad(alpha))
     CM=coeff.get("CM_0")+(coeff.get("CM_alpha")*alpha)+(coeff.get("CM_delta")*find_alpha.get_delta_rad(alpha))
     CD=coeff.get("CD_0") +(coeff.get("CD_K")*CL**2)
     return CL,CM,CD
