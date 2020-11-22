@@ -18,7 +18,7 @@ class Plane():
 		self.gamma_0 = 0
 		self.gamma = 0
 		self.x_e = 0
-		self.z_e = 0
+		self.z_e = -1000
 		self.alpha = 0 
 		self.weight = veh.acMass * env.gravity
 		self.m = veh.acMass
@@ -104,7 +104,7 @@ class Plane():
 		self.alpha_dot = math.atan(self.wb/self.ub)
 		self.gamma_dot = self.theta - self.alpha_dot
 		self.dzEz = -self.ub*math.sin(self.theta) + self.wb*math.cos(self.theta)
-		print(self.alpha_dot,self.gamma_dot,self.dzEz,self.q_dot,self.ub_dt,self.wb_dt)
+		#print(self.alpha_dot,self.gamma_dot,self.dzEz,self.q_dot,self.ub_dt,self.wb_dt)
 	def update(self):
 		self.alpha += (self.alpha_dot)
 		self.gamma += (self.gamma_dot)
@@ -113,6 +113,7 @@ class Plane():
 		self.q += (self.q_dot * self.time_step)
 		self.ub += (self.ub_dt * self.time_step)
 		self.wb += (self.wb_dt * self.time_step)
+		print(self.z_e)
 		#print(self.alpha,self.gamma,self.z_e,self.q,self.ub,self.wb)
 		self.store_vars()
 	def store_vars(self):
