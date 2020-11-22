@@ -27,7 +27,11 @@ class Simulation():
             self.t_ret = np.append(self.t_ret,i * self.conditions.get("Time Step"))
             self.aircraft.dynamic_derivatives()
             self.aircraft.update()
-        plt.plot(self.t_ret,self.aircraft.theta_ret,'r--')
+            if i is 100:
+                self.aircraft.del_mod = 1.1
+        plt.plot(self.t_ret,self.aircraft.ub_ret,'r--')
+        plt.plot(self.t_ret,self.aircraft.wb_ret,'bx')
+        plt.plot(self.t_ret,self.aircraft.theta_ret,'go')
         plt.show()
 
 sim = Simulation(initial_conditions)

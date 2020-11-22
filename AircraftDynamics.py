@@ -9,15 +9,7 @@ import find_alpha as fa
 #Aircraft Dynamics Class 
 #temporary globals just to get function to run 
 coeff, covar = cd.set_coeffecients()
-alpha = 0
-# Equilibrium Conditions
-q = 0
-M = 0
-CM = 0
-
 gamma_rad = 0.05
-V = 100
-
 class Plane():
 	def __init__(self,time_step):
 		self.ub = 0
@@ -32,7 +24,7 @@ class Plane():
 		self.m = veh.acMass
 		self.V = 0
 		self.theta = 0
-		self.time_step = 0
+		self.time_step = time_step
 		self.CD = 0
 		self.CL = 0
 		self.D_0 = 0
@@ -51,6 +43,7 @@ class Plane():
 		self.theta_ret = np.array([0])
 		self.gamma_ret = np.array([0])
 		self.ze_ret = np.array([0])
+		self.del_mod = 1
 		#dictionary allows for variables to be extracted specifically from the state vector using their name and or allows full return of the state vector
 		self.state_vector = {"Ub" : self.ub, "Wb" : self.wb, "theta" : self.theta, "theta_dot" : self.q,
 		 "X_earth" : self.x_e, "Z_e" : self.z_e, "Altitude" : -self.z_e, "Velocity" : self.V}
@@ -72,7 +65,7 @@ class Plane():
 		return (0.5 * env.air_density * self.V**2 * veh.Sref) * (self.CL_0(alpha_rad) * np.cos(alpha_rad) + self.CD_0(alpha_rad) * np.sin(alpha_rad)) - self.weight * np.cos(self.theta_0(alpha_rad))
 	def alpha_0(self):
 		self.alpha = optimize.fsolve(self.get_alpha,0)
-		return alpha
+		return self.alpha
 	def set_initials(self):
 		pass_0 = self.alpha_0()
 		self.D_0,self.L_0,self.T_0,self.M_0 = self.forces_idk(pass_0)
@@ -93,7 +86,7 @@ class Plane():
 		self.Moment = (env.air_density*veh.Sref*veh.cbar*self.CM_0*self.V**2)/2
 		return self.Drag, self.Lift, self.Thrust,self.Moment
 	def forces_idk_new(self,alpha):
-		self.CL_new,self.CM_new,self.CD_new = fa.get_current_coeffecients(self.alpha)
+		self.CL_new,self.CM_new,self.CD_new = fa.get_current_coeffecients(self.alpha,self.del_mod)
 		self.Drag = 0.5 * env.air_density * self.V**2 * veh.Sref * self.CD_new
 		self.Lift = 0.5 * env.air_density * self.V**2 * veh.Sref * self.CL_new
 		self.Thrust = self.Drag * np.cos(alpha) + self.weight * np.sin(self.theta) - self.Lift * np.sin(alpha)
@@ -108,18 +101,19 @@ class Plane():
 		self.V = math.sqrt(self.ub**2 + self.wb**2)
 		self.q_dot = self.Moment / veh.inertia_yy
 		self.theta_dot = self.q
-		print(self.theta_dot)
 		self.alpha_dot = math.atan(self.wb/self.ub)
 		self.gamma_dot = self.theta - self.alpha_dot
 		self.dzEz = -self.ub*math.sin(self.theta) + self.wb*math.cos(self.theta)
+		print(self.alpha_dot,self.gamma_dot,self.dzEz,self.q_dot,self.ub_dt,self.wb_dt)
 	def update(self):
 		self.alpha += (self.alpha_dot)
 		self.gamma += (self.gamma_dot)
-		self.theta = self.alpha + self.gamma
+		self.theta += (self.theta_dot * self.time_step)
 		self.z_e += (self.dzEz * self.time_step)
 		self.q += (self.q_dot * self.time_step)
 		self.ub += (self.ub_dt * self.time_step)
 		self.wb += (self.wb_dt * self.time_step)
+		#print(self.alpha,self.gamma,self.z_e,self.q,self.ub,self.wb)
 		self.store_vars()
 	def store_vars(self):
 		self.alpha_ret = np.append(self.alpha_ret, self.alpha)
