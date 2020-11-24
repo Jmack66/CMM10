@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 #Plane coeffecient Data
 #container for data and related coeffecient things
 #initial guesses
+
 CL_0 = 0.0410
 CL_alpha = 0.1
 CL_delta = 0.003
@@ -50,6 +51,8 @@ def CM_d_func(x, a): #delta_el, CM_el
     return a * x
 #-----------------------
 all_funcs = np.array([CL_a_func,CL_d_func,CD_CL_func,CM_alpha_func,CM_d_func])
+
+#uses scipy to curve fit
 def curve_fit_all():
     all_covars = np.array([])
     all_params = np.array([])
@@ -58,9 +61,27 @@ def curve_fit_all():
         all_covars = np.append(all_covars,covars)
         all_params = np.append(all_params,params)
     return all_params,all_covars
+# create a dictionary of all the coeffecients so that they can be accessed easily
+# calling set_coeffecients will call curve_fit_all and returns the coeffecients and covariance
 def set_coeffecients():
     coeffs,covar = curve_fit_all()
-    coeffecients = {"CL_0" : coeffs[0],"CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delt" : coeffs[7]}
-    print(coeffecients)
-    return True
-set_coeffecients()
+    coeffecients = {'CL_0' : coeffs[0], "CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delta" : coeffs[7]}
+    covariance = {"CL_0" : covar[0],"CL_alpha" : covar[1],"CL_delta" : covar[2],"CD_0" : covar[3],"CD_K" : covar[4],"CM_0" : covar[5],"CM_alpha" : covar[6], "CM_delt" : covar[7]}
+    return coeffecients,covariance
+
+
+def getPlots():
+    #NEED TO ADD CALCILATED FITS TO PLOT
+    fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
+    ax1.set(ylabel='CD_wing')
+    ax1.plot(alpha,CD_wing,'rx')
+    ax2.set(ylabel='CL_wing')
+    ax2.plot(alpha,CL_wing,'bx')
+    ax3.set(ylabel='CM_wing')
+    ax3.plot(alpha,CM_wing,'gx')
+    fig2, (ax4,ax5) = plt.subplots(2, sharex=True)
+    ax4.set(ylabel='CL_el')
+    ax4.plot(delta_el,CL_el,'yx')
+    ax5.set(ylabel='CM_el')
+    ax5.plot(delta_el,CM_el,'cx')
+    return fig,fig2
