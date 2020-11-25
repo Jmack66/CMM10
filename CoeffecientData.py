@@ -1,6 +1,5 @@
 from scipy import optimize
 import numpy as np
-import matplotlib.pyplot as plt
 #Plane coeffecient Data
 #container for data and related coeffecient things
 #initial guesses
@@ -108,23 +107,6 @@ def set_coeffecients():
     coeffs,covar = curve_fit_all()
     coeffecients = {'CL_0' : coeffs[0], "CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delta" : coeffs[7]}
     covariance = {"CL_0" : covar[0],"CL_alpha" : covar[1],"CL_delta" : covar[2],"CD_0" : covar[3],"CD_K" : covar[4],"CM_0" : covar[5],"CM_alpha" : covar[6], "CM_delt" : covar[7]}
+    print(coeffecients)
     return coeffecients,covariance
-
-
-def getPlots():
-    #NEED TO ADD CALCILATED FITS TO PLOT
-    fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
-    ax1.set(ylabel='CD_wing')
-    ax1.plot(alpha,CD_wing,'rx')
-    ax2.set(ylabel='CL_wing')
-    ax2.plot(alpha,CL_wing,'bx')
-    ax3.set(ylabel='CM_wing')
-    ax3.plot(alpha,CM_wing,'gx')
-    fig2, (ax4,ax5) = plt.subplots(2, sharex=True)
-    ax4.set(ylabel='CL_el')
-    ax4.plot(delta_el,CL_el,'yx')
-    ax5.set(ylabel='CM_el')
-    ax5.plot(delta_el,CM_el,'cx')
-    return fig,fig2
-
 set_coeffecients()
