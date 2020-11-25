@@ -29,7 +29,7 @@ def CL_a_func(x, a, b):
 # params contains the fitted values of a and b
 # params_covariance contains a measure of the achieved 
 # accuracy 
-params, params_covariance = optimize.curve_fit(CL_a_func, aero_table.alpha, aero_table.CL_wing,
+params, params_covariance = optimize.curve_fit(CL_a_func, aero_table.alpha, aero_table.CL,
         p0=[CL_0, CL_alpha])
 
 CL_0 = params[0]
@@ -56,7 +56,7 @@ CD_k = 0.045
 def CD_CL_func(x, a, b):
     return a + b * x**2.0
 
-params, params_covariance = optimize.curve_fit(CD_CL_func, aero_table.CL_wing, aero_table.CD_wing,
+params, params_covariance = optimize.curve_fit(CD_CL_func, aero_table.CL, aero_table.CD,
         p0=[CD_0, CD_k])
 
 CD_0 = params[0]
@@ -70,7 +70,7 @@ CM_alpha = -0.01
 def CM_alpha_func(x, a, b):
     return a + b * x
 
-params, params_covariance = optimize.curve_fit(CM_alpha_func, aero_table.alpha, aero_table.CM_wing,
+params, params_covariance = optimize.curve_fit(CM_alpha_func, aero_table.alpha, aero_table.CM,
         p0=[CM_0, CM_alpha])
 
 CM_0 = params[0]

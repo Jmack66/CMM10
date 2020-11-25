@@ -43,7 +43,7 @@ def CD(alpha_x):
         
         return coeff.CD_0 + coeff.CD_k*CL(alpha_x)**2
 #when gamma is equal to 0.025 rad
-gamma_rad_1 = 0.025
+gamma_rad_1 = 0.05
 
 #uses to put list of alpha,delta and thrust value that being produced due to the v=range value of velocity
 list_alpha_1 = []
@@ -56,11 +56,12 @@ def theta(alpha_x):
 def find_alpha(v):
       find_alpha = lambda alpha_rad : (0.5 * env.air_density * v**2 * veh.Sref) * (CL(alpha_rad) * np.cos(alpha_rad) + CD(alpha_rad) * np.sin(alpha_rad)) - W * np.cos(theta(alpha_rad))
       return find_alpha
-  
 #using for loop to get multiple answer for alpha,delta and thrust
 #Append is used to store the value of alpha,delta and thrust inside list_alpha,list_delta and list_thrust respectively
+alpha_1 = optimize.fsolve(find_alpha(100),0)
+print(alpha_1)
 for v in V:
-    alpha_1 = optimize.fsolve(find_alpha(v),0)
+    
     list_alpha_1.append(alpha_1)
     
     delta_rad_1 = delta(alpha_1)*(math.pi/180)
