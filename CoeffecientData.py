@@ -15,9 +15,7 @@ all_guess = np.array([(CL_0,CL_alpha),CL_delta,(CD_0,CD_k),(CM_0,CM_alpha),CM_de
 
 #------Data Values--------
 alpha = np.array([-16,-12,-8,-4,-2,0,2,4,8,12])
-alpha = np.deg2rad(alpha)
 delta_el  = np.array([-20,-10,0,10,20])
-delta_el = np.deg2rad(delta_el)
 
 CD = np.array([
     0.115000000000000
@@ -107,6 +105,6 @@ def set_coeffecients():
     coeffs,covar = curve_fit_all()
     coeffecients = {'CL_0' : coeffs[0], "CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delta" : coeffs[7]}
     covariance = {"CL_0" : covar[0],"CL_alpha" : covar[1],"CL_delta" : covar[2],"CD_0" : covar[3],"CD_K" : covar[4],"CM_0" : covar[5],"CM_alpha" : covar[6], "CM_delt" : covar[7]}
-    print(coeffecients)
+    #print(coeffecients)
     return coeffecients,covariance
 set_coeffecients()

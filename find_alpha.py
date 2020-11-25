@@ -30,10 +30,10 @@ V = 100
 
 
 def delta(alpha_x):
-        return -(coeff.get("CM_0") + coeff.get("CM_alpha")*alpha_x)/coeff.get("CM_delta")
+        return -(coeff.get("CM_0") + coeff.get("CM_alpha")*alpha_x/coeff.get("CM_delta"))
 
 def CL(alpha_x):
-        return coeff.get("CL_0") + coeff.get("CL_alpha")*np.degrees(alpha_x) + coeff.get("CL_delta")*delta(alpha_x)
+        return coeff.get("CL_0") + coeff.get("CL_alpha")*alpha_x + coeff.get("CL_delta")*delta(alpha_x)
     
 
 def CD(alpha_x):
@@ -45,6 +45,7 @@ W = veh.acMass * env.gravity
 find_alpha = lambda alpha_rad: (0.5 * env.air_density * V**2 * veh.Sref) * (CL(alpha_rad) * np.cos(alpha_rad) + CD(alpha_rad) * np.sin(alpha_rad)) - W * np.cos(theta(alpha_rad))
 
 alpha = optimize.fsolve(find_alpha,0)
+print(alpha)
 delta_rad = delta(alpha)*(math.pi/180)
 CL_2 = coeff.get("CL_0")+(coeff.get("CL_alpha")*alpha)+coeff.get("CL_delta")*((delta_rad))
 CD_2 = coeff.get("CD_0") +(coeff.get("CD_K")*CL_2**2)
