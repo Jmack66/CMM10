@@ -72,7 +72,9 @@ def get_current_coeffecients(alpha,del_mod):
         CM=coeff.get("CM_0")+(coeff.get("CM_alpha")*alpha)+(coeff.get("CM_delta")*((del_mod)*delta_rad))
         CD=coeff.get("CD_0") +(coeff.get("CD_K")*CL**2)
         return CL,CM,CD
-
+CL = coeff.get("CL_0")+(coeff.get("CL_alpha")*self.alpha)+(coeff.get("CL_delta")*((self.del_mod)*self.delta))
+CM = coeff.get("CM_0")+(coeff.get("CM_alpha")*self.alpha)+(coeff.get("CM_delta")*((self.del_mod)*self.delta))
+CD = coeff.get("CD_0") +(coeff.get("CD_K")*CL**2)
 # print ('Thrust = ', float(np.round(Thrust, 2)), 'N')
 # print('Ub =', float(np.round(Ub, 3)), 'm/s')
 # print('Wb = ', float(np.round(Wb, 4)), 'm/s')
