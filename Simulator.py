@@ -62,4 +62,4 @@ class Simulator():
         ax5.plot(self.t_ret,self.wb_ret,'c--')
         ax6.set(ylabel='Altitude(m/s)',xlabel = 'Time, t(s)')
         ax6.plot(self.t_ret,self.altitude_ret,'k--')
-        plt.show()
+        return fig,fig2

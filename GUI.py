@@ -27,8 +27,9 @@ class Simulator_gui(tk.Tk):
         container.pack(side="top", fill="both", expand = True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
-
         self.frames = {}
+        self.fig1 = 0
+        self.fig2 = 0
         for F in (StartPage, PageOne, PageTwo, PageThree):
 
             frame = F(container, self)
@@ -82,7 +83,7 @@ class StartPage(tk.Frame):
         def run_simulation(self):
             simp = sim.Simulator(self.sim_vars)
             simp.set_initials()
-            simp.cycles() 
+            fig1,fig2 = simp.cycles() 
             return True           
         tk.Frame.__init__(self,parent)
         title = tk.Label(self, text="Aircraft Properties", fg = HIGHLIGHT,bg = BG, font=LARGE_FONT).grid(row = 0,column = 2)
@@ -168,9 +169,8 @@ class PageThree(tk.Frame):
                             command=lambda: controller.show_frame(StartPage))
         button1.pack()
         self.data_handler()
-        """
-        f = self.fig1
-        f2 = self.fig2
+        f = controller.fig1
+        f2 = controller.fig2
         canvas = FigureCanvasTkAgg(f, self)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
@@ -185,7 +185,7 @@ class PageThree(tk.Frame):
         toolbar = NavigationToolbar2Tk(canvas, self)
         toolbar.update()
         canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        """
+        
 
     def data_handler(self):
         #data go
