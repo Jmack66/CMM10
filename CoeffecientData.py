@@ -1,10 +1,8 @@
 from scipy import optimize
 import numpy as np
-import matplotlib.pyplot as plt
 #Plane coeffecient Data
 #container for data and related coeffecient things
 #initial guesses
-
 CL_0 = 0.0410
 CL_alpha = 0.1
 CL_delta = 0.003
@@ -17,27 +15,67 @@ all_guess = np.array([(CL_0,CL_alpha),CL_delta,(CD_0,CD_k),(CM_0,CM_alpha),CM_de
 
 #------Data Values--------
 alpha = np.array([-16,-12,-8,-4,-2,0,2,4,8,12])
+delta_el  = np.array([-20,-10,0,10,20])
 
-CD_wing = np.array([
-	0.115000000000000 , 0.079000000000000, 0.047000000000000, 0.031000000000000,
- 	0.027000000000000, 0.027000000000000, 0.029000000000000, 0.034000000000000, 0.054000000000000, 0.0])
+CD = np.array([
+    0.115000000000000
+  , 0.079000000000000
+  , 0.047000000000000
+  , 0.031000000000000
+  , 0.027000000000000
+  , 0.027000000000000
+  , 0.029000000000000
+  , 0.034000000000000
+  , 0.054000000000000
+  , 0.089000000000000
+  ])
 
-CL_wing = np.array([-1.421000000000000,-1.092000000000000,-0.695000000000000,-0.312000000000000,-0.132000000000000,
- 	 0.041000000000000, 0.218000000000000, 0.402000000000000, 0.786000000000000, 1.186000000000000])
 
-CM_wing = np.array([
-0.077500000000000, 0.066300000000000, 0.053000000000000, 0.033700000000000, 0.021700000000000,
- 0.007300000000000,-0.009000000000000,-0.026300000000000,-0.063200000000000,-0.123500000000000])
+CL = np.array([
+   -1.421000000000000
+  ,-1.092000000000000
+  ,-0.695000000000000
+  ,-0.312000000000000
+  ,-0.132000000000000
+  , 0.041000000000000
+  , 0.218000000000000
+  , 0.402000000000000
+  , 0.786000000000000
+  , 1.186000000000000
+  ])
 
-# Elevator angle delta_E
-delta_el = np.array([-20,-10,0,10,20])
+CM = np.array([
+    0.077500000000000
+  , 0.066300000000000
+  , 0.053000000000000
+  , 0.033700000000000
+  , 0.021700000000000
+  , 0.007300000000000
+  ,-0.009000000000000
+  ,-0.026300000000000
+  ,-0.063200000000000
+  ,-0.123500000000000
+  ])
 
-CL_el = np.array([-0.051000000000000,-0.038000000000000, 0, 0.038000000000000, 0.052000000000000])
+CL_el = np.array([
+   -0.051000000000000
+  ,-0.038000000000000
+  ,                 0
+  , 0.038000000000000
+  , 0.052000000000000
+  ])
 
-CM_el = np.array([0.084200000000000, 0.060100000000000,-0.000100000000000,-0.060100000000000,-0.0])
+CM_el = np.array([
+    0.084200000000000
+  , 0.060100000000000
+  ,-0.000100000000000
+  ,-0.060100000000000
+  ,-0.084300000000000
+  ])
+
 names = np.array(["CD_wing", "CL_wing","CM_wing","CL_el", "CM_el"])
-all_arrs = np.array([CD_wing,CL_wing,CM_wing,CL_el,CM_el])
-feed = np.array([(alpha, CL_wing),(delta_el,CL_el),(CL_wing,CD_wing),(alpha,CM_wing),(delta_el,CM_el)])
+all_arrs = np.array([CD,CL,CM,CL_el,CM_el])
+feed = np.array([(alpha, CL),(delta_el,CL_el),(CL,CD),(alpha,CM),(delta_el,CM_el)])
 #-----------Functions------ 
 def CL_a_func(x, a, b): #alpha, cl
     return a + b * x
@@ -67,21 +105,6 @@ def set_coeffecients():
     coeffs,covar = curve_fit_all()
     coeffecients = {'CL_0' : coeffs[0], "CL_alpha" : coeffs[1],"CL_delta" : coeffs[2],"CD_0" : coeffs[3],"CD_K" : coeffs[4],"CM_0" : coeffs[5],"CM_alpha" : coeffs[6], "CM_delta" : coeffs[7]}
     covariance = {"CL_0" : covar[0],"CL_alpha" : covar[1],"CL_delta" : covar[2],"CD_0" : covar[3],"CD_K" : covar[4],"CM_0" : covar[5],"CM_alpha" : covar[6], "CM_delt" : covar[7]}
+    #print(coeffecients)
     return coeffecients,covariance
-
-
-def getPlots():
-    #NEED TO ADD CALCILATED FITS TO PLOT
-    fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
-    ax1.set(ylabel='CD_wing')
-    ax1.plot(alpha,CD_wing,'rx')
-    ax2.set(ylabel='CL_wing')
-    ax2.plot(alpha,CL_wing,'bx')
-    ax3.set(ylabel='CM_wing')
-    ax3.plot(alpha,CM_wing,'gx')
-    fig2, (ax4,ax5) = plt.subplots(2, sharex=True)
-    ax4.set(ylabel='CL_el')
-    ax4.plot(delta_el,CL_el,'yx')
-    ax5.set(ylabel='CM_el')
-    ax5.plot(delta_el,CM_el,'cx')
-    return fig,fig2
+set_coeffecients()
