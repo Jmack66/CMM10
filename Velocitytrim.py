@@ -4,7 +4,10 @@ Created on Mon Oct 26 17:40:03 2020
 
 @author: A C E R
 """
-
+"""
+This code was not directly used in the final implementation but the algorithms and methodology were relied on
+ heavily, shoutout to Freddie and Wan for their work on these files 
+"""
 import math
 import numpy as np
 from scipy import optimize
