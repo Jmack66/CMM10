@@ -36,7 +36,9 @@ class Simulator():
                 self.plane.del_mod = (1 + (self.sim_conditions.get("Elevator Change")/100.0))
             if i  >= (self.sim_conditions.get("Thrust Time") * 100):
                 self.plane.Thrust_mod = (1 + (self.sim_conditions.get("Thrust Change")/100.0))
-                
+            if self.plane.z_e <= -2000:
+                self.plane.del_mod = 1
+                self.plane.gamma = 0
             """
             part b 2
             if self.plane.z_e <= -2000:
@@ -47,17 +49,17 @@ class Simulator():
             """
                 
         fig, (ax1,ax2,ax3) = plt.subplots(3, sharex=True)
-        ax1.set(ylabel='alpha')
+        ax1.set(ylabel='alpha (deg)',xlabel = 'Time, t(s)')
         ax1.plot(self.t_ret,self.alpha_ret,'r--')
-        ax2.set(ylabel='gamma')
+        ax2.set(ylabel='gamma (deg)',xlabel = 'Time, t(s)')
         ax2.plot(self.t_ret,self.gamma_ret,'b--')
-        ax3.set(ylabel='theta')
+        ax3.set(ylabel='theta (deg)',xlabel = 'Time, t(s)')
         ax3.plot(self.t_ret,self.theta_ret,'g--')
         fig2, (ax4,ax5,ax6) = plt.subplots(3, sharex=True)
-        ax4.set(ylabel='ub')
+        ax4.set(ylabel='ub (m/s)',xlabel = 'Time, t(s)')
         ax4.plot(self.t_ret,self.ub_ret,'y--')
-        ax5.set(ylabel='wb')
+        ax5.set(ylabel='wb (m/s)',xlabel = 'Time, t(s)')
         ax5.plot(self.t_ret,self.wb_ret,'c--')
-        ax6.set(ylabel='Altitude')
-        ax6.plot(self.t_ret,self.altitude_ret,'r--')
+        ax6.set(ylabel='Altitude(m/s)',xlabel = 'Time, t(s)')
+        ax6.plot(self.t_ret,self.altitude_ret,'k--')
         plt.show()

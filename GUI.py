@@ -48,7 +48,7 @@ class Simulator_gui(tk.Tk):
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
-        def setSimVars(self,velocity,angle,runtime,el_change,el_time,thrust_change,thrust_time,thrust):
+        def setSimVars(self,velocity,angle,runtime,el_change,el_time,thrust_change,thrust_time):
             user_vel = velocity.get()
             user_ang = angle.get()
             user_run_time = runtime.get()
@@ -56,14 +56,12 @@ class StartPage(tk.Frame):
             user_el_time = el_time.get()
             user_thrust_change = thrust_change.get()
             user_thrust_time = thrust_time.get()
-            user_thrust = thrust.get()
             try:
                 user_vel = int(user_vel)
                 user_ang = int(user_ang)
                 user_run_time = int(user_run_time)
                 user_el_change = int(user_el_change)
                 user_el_time = int(user_el_time)
-                user_thrust = int(user_thrust)
                 user_thrust_change = int(user_thrust_change)
                 user_thrust_time = int(user_thrust_time)
                 error = tk.Label(self, text="-------Simulation parameters set-------", fg = HIGHLIGHT ,bg = BG, font= ("Verdana", 8)).grid(row = 13,column = 2)
@@ -76,11 +74,10 @@ class StartPage(tk.Frame):
                     user_el_time = float(user_el_time)
                     user_thrust_change = float(user_thrust_change)
                     user_thrust_time = float(user_thrust_time)
-                    user_thrust = float(user_thrust)
                     error = tk.Label(self, text="-------Simulation parameters set-------", fg = HIGHLIGHT ,bg = BG, font= ("Verdana", 8)).grid(row = 13,column = 2)
                 except ValueError:
                     error = tk.Label(self, text="ENTER FLOAT OR INTEGER VALUE", fg = '#FF0000',bg = BG, font= ("Verdana", 8)).grid(row = 13,column = 2)
-            self.sim_vars = {"Velocity" : user_vel, "Flight Path" : user_ang, "Run Time" : user_run_time, "Elevator Change" : user_el_change, "Elevator Time" : user_el_time, "Thrust Change" : user_thrust_change, "Thrust Time" :user_thrust_time, "Thrust" : user_thrust}
+            self.sim_vars = {"Velocity" : user_vel, "Flight Path" : user_ang, "Run Time" : user_run_time, "Elevator Change" : user_el_change, "Elevator Time" : user_el_time, "Thrust Change" : user_thrust_change, "Thrust Time" :user_thrust_time}
             return 0
         def run_simulation(self):
             simp = sim.Simulator(self.sim_vars)
@@ -98,7 +95,6 @@ class StartPage(tk.Frame):
         tk.Label(self,fg = HIGHLIGHT,bg = BG, text="Simulation Run Time(s): ",font=("Verdana", 15)).grid(row = 5,column = 1)
         tk.Label(self,fg = HIGHLIGHT,bg = BG, text="Percentage elevator change(%): ",font=("Verdana", 15)).grid(row = 6,column = 1)
         tk.Label(self,fg = HIGHLIGHT,bg = BG, text="Time of elevator change(s): ",font=("Verdana", 15)).grid(row = 7,column = 1)
-        tk.Label(self,fg = HIGHLIGHT,bg = BG, text="Engine Thrust (N): ",font=("Verdana", 15)).grid(row = 8,column = 1)
         tk.Label(self,fg = HIGHLIGHT,bg = BG, text="Percentage thrust change(%): ",font=("Verdana", 15)).grid(row = 9,column = 1)
         tk.Label(self,fg = HIGHLIGHT,bg = BG, text="Time of thrust change(s): ",font=("Verdana", 15)).grid(row = 10,column = 1)
         tk.Label(self, text="", fg = '#FF0000',bg = BG, font= ("Verdana", 6))
@@ -112,14 +108,12 @@ class StartPage(tk.Frame):
         el_change.grid(row = 6,column = 2)
         el_time = tk.Entry(self, width=20,fg = HIGHLIGHT,bg = DEEP)
         el_time.grid(row = 7,column = 2)
-        thrust= tk.Entry(self, width=20,fg = HIGHLIGHT,bg = DEEP)
-        thrust.grid(row = 8,column = 2)
         thrust_change = tk.Entry(self, width=20,fg = HIGHLIGHT,bg = DEEP)
         thrust_change.grid(row = 9,column = 2)
         thrust_time = tk.Entry(self, width=20,fg = HIGHLIGHT,bg = DEEP)
         thrust_time.grid(row = 10,column = 2)
         confirm = tk.Button(self, text="Confirm Properties",fg = HIGHLIGHT,bg = BG,
-                            command=lambda: setSimVars(self,velocity,angle,runtime,el_change,el_time,thrust_change,thrust_time,thrust)).grid(row = 14, column = 1)
+                            command=lambda: setSimVars(self,velocity,angle,runtime,el_change,el_time,thrust_change,thrust_time)).grid(row = 14, column = 1)
         run = tk.Button(self, text="Run",fg = HIGHLIGHT,bg = BG,
                             command=lambda: run_simulation(self)).grid(row = 14, column = 2)
 

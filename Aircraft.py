@@ -45,10 +45,10 @@ class Aircraft():
         return self.Lift
     def get_thrust_a(self,a):
         self.Thrust = self.Drag * np.cos(a) + self.weight * np.sin(self.theta) - self.Lift * np.sin(a)
-        self.Thrust = self.Thrust * self.Thrust_mod
+        self.Thrust = self.Thrust
         return self.Thrust
     def get_thrust(self,a):
-        self.Thrust = self.Thrust * self.Thrust_mod
+        self.Thrust = self.Thrust
         return self.Thrust
     def get_moment(self,a):
         self.Moment = 0.5 * (env.air_density*veh.Sref*veh.cbar*self.get_CM(a)*self.V**2)
