@@ -38,6 +38,7 @@ class Simulator():
                 self.plane.Thrust_mod = (1 + (self.sim_conditions.get("Thrust Change")/100.0))
             if self.plane.z_e <= -2000:
                 self.plane.del_mod = 1
+
                 self.plane.gamma = 0
             """
             part b 2
@@ -62,4 +63,4 @@ class Simulator():
         ax5.plot(self.t_ret,self.wb_ret,'c--')
         ax6.set(ylabel='Altitude(m/s)',xlabel = 'Time, t(s)')
         ax6.plot(self.t_ret,self.altitude_ret,'k--')
-        return fig,fig2
+        plt.show()

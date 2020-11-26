@@ -1,7 +1,6 @@
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 import tkinter as tk
 from tkinter import ttk
@@ -18,7 +17,6 @@ LARGE_FONT= ("Verdana", 20)
 """
 Some general notes-- this GUI code isnt great-- its very botched. I would love to add an option to have the control values be managed by a PID controller - Jonah
 """
-
 class Simulator_gui(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -42,8 +40,10 @@ class Simulator_gui(tk.Tk):
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
-
-
+    def results(self,fig,fig2):
+        PageThree.fig1 = fig
+        PageThree.fig2 = fig2
+        PageThree.tkraise()
 
 
 class StartPage(tk.Frame):
@@ -83,8 +83,12 @@ class StartPage(tk.Frame):
         def run_simulation(self):
             simp = sim.Simulator(self.sim_vars)
             simp.set_initials()
-            fig1,fig2 = simp.cycles() 
-            return True           
+            self.fig, self.fig2 = simp.cycles()
+            return True 
+        def show_plots(self):
+            self.fig
+            self.fig2
+            plt.show()
         tk.Frame.__init__(self,parent)
         title = tk.Label(self, text="Aircraft Properties", fg = HIGHLIGHT,bg = BG, font=LARGE_FONT).grid(row = 0,column = 2)
         logo = tk.PhotoImage(file="logo.png") 
@@ -118,13 +122,8 @@ class StartPage(tk.Frame):
         run = tk.Button(self, text="Run",fg = HIGHLIGHT,bg = BG,
                             command=lambda: run_simulation(self)).grid(row = 14, column = 2)
 
-        button = tk.Button(self, text="Visit Page 1",fg = HIGHLIGHT,bg = BG,
-                            command=lambda: controller.show_frame(PageOne)).grid(row = 14, column = 3)
-        button2 = tk.Button(self, text="Visit Page 2",fg = HIGHLIGHT,bg = BG,
-                            command=lambda: controller.show_frame(PageTwo)).grid(row = 14, column = 4)
-
-        button3 = tk.Button(self, text="Coeffecient Curves",fg = HIGHLIGHT,bg = BG,
-                            command=lambda: controller.show_frame(PageThree)).grid(row = 14, column = 5)
+        button3 = tk.Button(self, text="Future functionality",fg = HIGHLIGHT,bg = BG,
+                            command=lambda: show_plots).grid(row = 14, column = 5)
 
 class PageOne(tk.Frame):
 
@@ -168,23 +167,7 @@ class PageThree(tk.Frame):
         button1 = tk.Button(self, text="Back to Home",fg = HIGHLIGHT,bg = BG,
                             command=lambda: controller.show_frame(StartPage))
         button1.pack()
-        self.data_handler()
-        f = controller.fig1
-        f2 = controller.fig2
-        canvas = FigureCanvasTkAgg(f, self)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
-        toolbar = NavigationToolbar2Tk(canvas, self)
-        toolbar.update()
-        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        canvas = FigureCanvasTkAgg(f2, self)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
-        toolbar = NavigationToolbar2Tk(canvas, self)
-        toolbar.update()
-        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+   
         
 
     def data_handler(self):
