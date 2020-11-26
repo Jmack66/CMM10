@@ -8,14 +8,16 @@ import CoeffecientData as cd
 
 class Aircraft():
     def __init__(self, initials):
-        self.z_e = initials.get("Altitude")
+        self.z_e = -1000
         self.V = initials.get("Velocity")
         self.gamma = initials.get("Flight Path")
         self.time_step = initials.get("Time Step")
+        self.Thrust = initials.get("Thrust")
         self.mass = veh.acMass # this line isnt really needed but wanted to be able to access mass with .mass
-        self.x_e = initials.get("X")
+        self.x_e = 0
         self.weight = veh.acMass * env.gravity
         self.del_mod = 1.0
+        self.Thrust_mod = 1.0
         self.coeff,self.null = cd.set_coeffecients()
         self.q = 0.0
         self.delta_el = 0.0
@@ -23,7 +25,7 @@ class Aircraft():
         self.delta_el = -(self.coeff.get("CM_0") + self.coeff.get("CM_alpha")*np.degrees(a))/self.coeff.get("CM_delta")
         return self.delta_el
     def get_CL(self,a):#alpha in is radians
-        return self.coeff.get("CL_0") + self.coeff.get("CL_alpha")*np.degrees(a) + self.coeff.get("CL_delta")*math.degrees(self.delta_el) #for now using the class deltael variable as opposed to calling the function-- understanding is that del el doesnt change
+        return self.coeff.get("CL_0") + self.coeff.get("CL_alpha")*np.degrees(a) + self.coeff.get("CL_delta")*math.degrees(self.delta_el * self.del_mod) #for now using the class deltael variable as opposed to calling the function-- understanding is that del el doesnt change
     def get_CL_alpha(self,a):#alpha in is radians
         return self.coeff.get("CL_0") + self.coeff.get("CL_alpha")*np.degrees(a) + self.coeff.get("CL_delta")*self.trim(a)
     def get_CD_alpha(self,a):#alpha in radians
@@ -31,7 +33,7 @@ class Aircraft():
     def get_CD(self,a):#alpha in radians
         return self.coeff.get("CD_0") + self.coeff.get("CD_K")*self.get_CL(a)**2
     def get_CM(self,a):
-        return self.coeff.get("CM_0")+(self.coeff.get("CM_alpha")*np.degrees(a))+(self.coeff.get("CM_delta")*math.degrees(self.delta_el))
+        return self.coeff.get("CM_0")+(self.coeff.get("CM_alpha")*np.degrees(a))+(self.coeff.get("CM_delta")*math.degrees(self.delta_el * self.del_mod))
     def set_theta(self,a): #alpha in rads
         self.theta = a + self.gamma
         return self.theta #theta in rads
@@ -41,9 +43,12 @@ class Aircraft():
     def get_lift(self,a):
         self.Lift = 0.5 * env.air_density * self.V**2 * veh.Sref * self.get_CL(a)
         return self.Lift
+    def get_thrust_a(self,a):
+        self.Thrust = self.Drag * np.cos(a) + self.weight * np.sin(self.theta) - self.Lift * np.sin(a)
+        self.Thrust = self.Thrust * self.Thrust_mod
+        return self.Thrust
     def get_thrust(self,a):
-        #self.Thrust = self.Drag * np.cos(a) + self.weight * np.sin(self.theta) - self.Lift * np.sin(a)
-        self.Thrust = 2755.18
+        self.Thrust = self.Thrust * self.Thrust_mod
         return self.Thrust
     def get_moment(self,a):
         self.Moment = 0.5 * (env.air_density*veh.Sref*veh.cbar*self.get_CM(a)*self.V**2)
@@ -61,7 +66,7 @@ class Aircraft():
     def get_forces(self,a): #wapper function just gets the drag,lift and moment forces in one
         self.get_drag(a)
         self.get_lift(a)
-        self.get_thrust(a)
+        self.get_thrust_a(a)
         self.get_moment(a)
         self.get_ub(a)
         self.get_wb(a)
@@ -119,9 +124,7 @@ class Aircraft():
         self.theta += self.theta_dt * self.time_step
         self.alpha = self.update_alpha()
         self.gamma = self.update_gamma(self.alpha)
-
         self.z_e += self.dz_dt * self.time_step
         self.x_e += self.dx_dt * self.time_step
     def fetch_state(self):
-        #print(self.alpha,self.V,self.ub,self.wb,self.q,self.theta,self.z_e,self.x_e,self.delta_el,self.gamma)
-        return self.alpha,self.V,self.ub,self.wb,self.q,self.theta,self.z_e,self.x_e,self.delta_el,self.gamma
+        return self.Thrust,self.alpha,self.V,self.ub,self.wb,self.q,self.theta,self.z_e,self.x_e,self.delta_el * self.del_mod,self.gamma
